@@ -1,0 +1,55 @@
+const admin = require('./admin.js')
+
+module.exports = app => {
+
+    app.post('/signup', app.api.user.save)
+    app.post('/signin', app.api.auth.signin)
+    app.post('/validateToken', app.api.auth.validateToken)
+
+    app.route('/users')
+        .all(app.config.passport.authenticate())
+        .post(admin(app.api.user.save))
+        .get(admin(app.api.user.get))
+    app.route('/users/:id')
+        .all(app.config.passport.authenticate())
+        .put(admin(app.api.user.save))
+        .get(app.api.user.getById)
+        .delete(admin(app.api.user.remove))
+
+    app.route('/products')
+        .all(app.config.passport.authenticate())
+        .post(admin(app.api.product.save))
+        .get(app.api.product.get)
+    app.route('/products/:id')
+        .all(app.config.passport.authenticate())
+        .put(admin(app.api.product.save))
+        .get(app.api.product.getById)
+        .delete(admin(app.api.product.remove))
+
+    app.route('/sales')
+        .all(app.config.passport.authenticate())
+        .post(app.api.sales.save)
+        .get(app.api.sales.get)
+    app.route('/sales/:id')
+        .all(app.config.passport.authenticate())
+        .post(app.api.sales.save)
+        .get(app.api.sales.getById)
+        .delete(app.api.sales.remove)
+
+    app.route('/salesItem')
+        .all(app.config.passport.authenticate())
+        .post(app.api.salesItem.save)
+    app.route('/salesItem/:id')
+        .all(app.config.passport.authenticate())
+        .post(app.api.salesItem.save)
+        .get(app.api.salesItem.getById)
+        .delete(app.api.salesItem.remove)
+    
+    app.route('/sale/:id/items')
+        .all(app.config.passport.authenticate())
+        .get(app.api.sales.getSalesItemBySaleId)
+
+    app.route('/user/:id/sales')
+        .all(app.config.passport.authenticate())
+        .get(app.api.sales.getSalesByUserId) 
+}
